@@ -27,6 +27,7 @@ blocks:
       jobs:
       - name: Docker build
         commands:
+          - checkout
           - docker build --rm -t dmazhukov/dotnet-core-service .
   - name: Push
     task:
