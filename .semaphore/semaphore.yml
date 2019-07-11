@@ -19,17 +19,7 @@ blocks:
           - checkout
           - ls -alh && pwd
           - printenv
-  - name: Build
-    task:
-      env_vars:
-        - name: APP_ENV
-          value: prod
-      jobs:
-      - name: Docker build
-        commands:
-          - checkout
-          - docker build --rm -t dmazhukov/dotnet-core-service .
-  - name: Push
+  - name: Build and push
     task:
       # Pull in environment variables from the "docker" secret
       secrets:
@@ -38,7 +28,12 @@ blocks:
         commands:
           # Authenticate to the registry for all jobs in the block
           - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      env_vars:
+        - name: APP_ENV
+          value: prod
       jobs:
-      - name: Docker push
+      - name: Docker build
         commands:
+          - checkout
+          - docker build --rm -t dmazhukov/dotnet-core-service .
           - docker push dmazhukov/dotnet-core-service
