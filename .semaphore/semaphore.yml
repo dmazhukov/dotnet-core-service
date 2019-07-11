@@ -9,24 +9,33 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Simple example
+  - name: Build and push
     task:
-      env_vars:
-        - name: APP_ENV
-          value: prod
       jobs:
       - name: Download our code
         commands:
           - echo "Hello from Semaphore!"
           - echo $APP_ENV
           - checkout
-      - name: Print env
-        commands:
           - ls -alh && pwd
           - printenv
+    task:
+      env_vars:
+        - name: APP_ENV
+          value: prod
+      jobs:
       - name: Docker build
         commands:
           - docker build --rm -t dmazhukov/dotnet-core-service .
+    task:
+      # Pull in environment variables from the "docker" secret
+      secrets:
+        - name: dockerhub-secrets
+      prologue:
+        commands:
+          # Authenticate to the registry for all jobs in the block
+          - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      jobs:
       - name: Docker push
         commands:
           - docker push dmazhukov/dotnet-core-service
