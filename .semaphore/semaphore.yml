@@ -20,6 +20,13 @@ blocks:
           - echo "Hello from Semaphore!"
           - echo $APP_ENV
           - checkout
+      - name: Print env
+        commands:
           - ls -alh && pwd
           - printenv
+      - name: Docker build
+        commands:
           - docker build --rm -t dmazhukov/dotnet-core-service .
+      - name: Docker push
+        commands:
+          - docker push dmazhukov/dotnet-core-service
