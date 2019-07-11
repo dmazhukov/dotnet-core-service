@@ -21,4 +21,5 @@ blocks:
           - echo $APP_ENV
           - checkout
           - ls -alh && pwd
-          - docker build --rm -t dmazhukov/dotnet-core-service 
+          - printenv
+          - docker build --rm -t dmazhukov/dotnet-core-service .
