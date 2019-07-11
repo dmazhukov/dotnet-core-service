@@ -9,7 +9,7 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build and push
+  - name: Prepare
     task:
       jobs:
       - name: Download our code
@@ -19,6 +19,7 @@ blocks:
           - checkout
           - ls -alh && pwd
           - printenv
+  - name: Build
     task:
       env_vars:
         - name: APP_ENV
@@ -27,6 +28,7 @@ blocks:
       - name: Docker build
         commands:
           - docker build --rm -t dmazhukov/dotnet-core-service .
+  - name: Push
     task:
       # Pull in environment variables from the "docker" secret
       secrets:
